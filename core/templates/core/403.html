@@ -1,0 +1,15 @@
+{% extends "core/base.html" %}
+{% load static %}
+{% block title %}
+Доступ запрещен
+{% endblock title %}
+{% block content %}
+<div class="container-lg text-center">
+    <div class="row" style="height: 88vh;">
+        <div class="col-12 align-self-center">
+            <img src="{% static 'core/png/403.png' %}" alt="Доступ запрещен">
+            <h1>Не хватает прав на выполнение операции</h1>
+        </div>
+    </div>
+</div>
+{% endblock content %}

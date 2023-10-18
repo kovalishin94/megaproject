@@ -1,0 +1,185 @@
+{% extends "testing/base_tests.html" %}
+{% load static %}
+{% block link %}
+{% endblock link %}
+{% block title %}
+{{ title }}
+{% endblock title %}
+{% block test_content %}
+<h1 class="mb-3">Вопросы теста "{{ test.title }}"</h1>
+{% if questions %}
+<table class="table table-responsive">
+    <thead>
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">Наименование</th>
+            <th scope="col">Ответы</th>
+            <th scope="col"></th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for question in questions %}
+        <tr>
+            <th scope="row">{{ question.order_number }}</th>
+            <td>{{ question.title }}</td>
+            <td>{% for i in question.choice_set.all %}
+                {% if i.is_correct %}
+                <form action="{% url 'delete_choice' i.pk %}" method="post">
+                    <p style="color: green;">
+                        {{ forloop.counter }}. {{ i.title }}
+                        {% csrf_token %}
+                        <button style="background-color: transparent; border: 0;">
+                            <img src="{% static 'testing/png/bin.png' %}" alt="" width="20px"></a>
+                        </button>
+                    </p>
+                </form>
+                {% else %}
+                <form action="{% url 'delete_choice' i.pk %}" method="post">
+                    <p>
+                        {{ forloop.counter }}. {{ i.title }}
+                        {% csrf_token %}
+                        <button style="background-color: transparent; border: 0;">
+                            <img src="{% static 'testing/png/bin.png' %}" alt="" width="20px"></a>
+                        </button>
+                    </p>
+                </form>
+                {% endif %}
+                {% endfor %}
+                <div class="col-md-8 col-12">
+                    <form action="{% url 'add_choice' question.pk %}" method="post">
+                        {% csrf_token %}
+                        <textarea class="form-control mb-2" id="id_choice_title" name="choice_title"
+                            required=""></textarea>
+                        <input type="checkbox" class="form-check-input" id="dropdownCheck2" name="is_correct"
+                            value="True">
+                        <label class="form-check-label mb-2" for="dropdownCheck2">
+                            Верный ответ
+                        </label>
+                        <p>
+                            <button type="submit" class="btn btn-secondary">Добавить</button>
+                        </p>
+                    </form>
+                </div>
+            </td>
+            <td>
+                <!-- Выпадающий список таблицы -->
+                <div class="dropdown">
+                    <button class="btn btn-light dropdown-toggle" type="button" data-bs-toggle="dropdown"
+                        aria-expanded="false">
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li>
+                            <button class="dropdown-item" data-bs-toggle="modal"
+                                data-bs-target="#updateQuestion{{ question.pk }}">
+                                Редактировать вопрос
+                            </button>
+                        </li>
+                        <li>
+                            <button class="dropdown-item" data-bs-toggle="modal"
+                                data-bs-target="#deleteQuestion{{ question.pk }}">
+                                Удалить
+                            </button>
+                        </li>
+                    </ul>
+                </div>
+            </td>
+        </tr>
+        <!-- Модальное окно удаления вопроса -->
+        <div class="modal fade" id="deleteQuestion{{ question.pk }}" tabindex="-1"
+            aria-labelledby="deleteQuestion{{ question.pk }}Label" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="deleteQuestion{{ question.pk }}Label">Удаление вопроса</h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
+                    </div>
+                    <form action="{% url 'delete_question' question.pk %}" method="post">
+                        {% csrf_token %}
+                        <div class="modal-body">
+                            Вы действительно хотите удалить {{ question.title }}?
+                        </div>
+                        <div class="modal-footer">
+                            <button type="reset" class="btn btn-light" data-bs-dismiss="modal">Закрыть</button>
+                            <button type="submit" class="btn btn-danger">Удалить</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <!-- Модальное окно редактирования вопроса -->
+        <div class="modal fade" id="updateQuestion{{ question.pk }}" tabindex="-1"
+            aria-labelledby="updateQuestion{{ question.pk }}Label" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="updateQuestion{{ question.pk }}Label">Редактировать вопрос</h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
+                    </div>
+                    <form action="{% url 'update_question' question.pk %}" method="post">
+                        <div class="modal-body">
+                            {% csrf_token %}
+                            <label for="id_title">Название:</label>
+                            <input type="text" name="title" class="form-control" maxlength="200" required=""
+                                id="id_title" value="{{ question.title }}">
+                        </div>
+                        <div class="modal-footer">
+                            <button type="reset" class="btn btn-light" data-bs-dismiss="modal">Закрыть</button>
+                            <button type="submit" class="btn btn-secondary">Сохранить</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </tbody>
+</table>
+{% else %}
+Нет вопросов в тесте
+{% endif %}
+{% if not questions.has_next %}
+<div class="d-grid gap-2">
+    <button type="button" class="btn btn-outline-light" data-bs-toggle="modal" data-bs-target="#addQuestion">
+        <img src="{% static 'tasks/png/plus.png' %}" alt="Новый вопрос" style="width: 30px;">
+    </button>
+</div>
+{% endif %}
+<!-- Модальное окно создание вопроса -->
+<div class="modal fade" id="addQuestion" tabindex="-1" aria-labelledby="addQuestionLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="addQuestionLabel">Добавить новый вопрос</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
+            </div>
+            <form action="" method="post">
+                <div class="modal-body">
+                    {% csrf_token %}
+                    <label for="id_title">Название:</label>
+                    <input type="text" name="title" class="form-control" maxlength="200" required="" id="id_title">
+                </div>
+                <div class="modal-footer">
+                    <button type="reset" class="btn btn-light" data-bs-dismiss="modal">Закрыть</button>
+                    <button type="submit" class="btn btn-secondary">Добавить</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<div class="pagination">
+    <span class="step-links">
+        {% if questions.has_previous %}
+        <a href="?page=1" class="btn btn-light">Начало</a>
+        <a href="?page={{ questions.previous_page_number }}" class="btn btn-light">Предыдущая</a>
+        {% endif %}
+
+        <span class="current">
+            Страница {{ questions.number }} из {{ questions.paginator.num_pages }}.
+        </span>
+
+        {% if questions.has_next %}
+        <a href="?page={{ questions.next_page_number }}" class="btn btn-light">Следующая</a>
+        <a href="?page={{ questions.paginator.num_pages }}" class="btn btn-light">Конец</a>
+        {% endif %}
+    </span>
+</div>
+{% endblock test_content %}

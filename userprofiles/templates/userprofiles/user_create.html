@@ -1,0 +1,33 @@
+{% extends "core/base.html" %}
+{% load static %}
+{% block link %}
+<script src="{% static 'userprofiles/js/user.js' %}" defer></script>
+{% endblock link %}
+{% block title %}
+{{ title }}
+{% endblock title %}
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-md-3 col-12">
+            <div class="list-group">
+                <a href="{% url 'user_create' %}"
+                    class="list-group-item list-group-item-action list-group-item-light active" aria-current="true"
+                    aria-current="true">
+                    Создать пользователя для авторизации
+                </a>
+                <a href="{% url 'users' %}" class="list-group-item list-group-item-action list-group-item-light">Список
+                    пользователей</a>
+            </div>
+        </div>
+        <div class="col-md-9 col-12">
+            <form method="post">
+                {% csrf_token %}
+                {{ form.as_div }}
+                {{ form2.as_p }}
+                <button type="submit" class="btn btn-dark mt-3">Создать</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock content %}

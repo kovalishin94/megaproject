@@ -1,0 +1,30 @@
+{% extends "core/base.html" %}
+{% load static %}
+{% block link %}
+{% endblock link %}
+{% block title %}
+{{ title }}
+{% endblock title %}
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <form action="" method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <button type="submit" class="btn btn-dark">{{ button }}</button>
+            </form>
+        </div>
+        {% if obj.task_file %}
+        <script type="text/javascript">
+            let fName = document.createElement('a')
+            fName.textContent = '{{ obj.tfilename }}'
+            fName.href = '{{ obj.task_file.url }}'
+            let inputFile = document.getElementById('id_task_file')
+            let parentInput = inputFile.parentNode
+            parentInput.insertBefore(fName, inputFile)
+        </script>
+        {% endif %}
+    </div>
+</div>
+{% endblock content %}

@@ -1,0 +1,53 @@
+{% extends "core/base.html" %}
+{% load static %}
+{% block title %}
+Главная
+{% endblock title %}
+{% block content %}
+<div class="container-lg text-center">
+    <div class="row">
+        <div class="col-md-6 col-12">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Общая статистика всех задач</h5>
+                    <canvas id="tasksStat" width="600" height="400"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    async function getTasksCount() {
+        const response = await fetch("{% url 'get_tasks_count' %}")
+        const tasksCount = await response.json()
+        const tasksStat = document.getElementById("tasksStat");
+        const data = {
+            labels: [
+                'Завершенные задачи',
+                'Не принятые задачи',
+                'Просроченные задачи',
+                'Задачи в работе',
+                'Задачи на проверке',
+            ],
+            datasets: [{
+                label: 'Колличество',
+                data: [tasksCount.solved, tasksCount.notaccepted, tasksCount.overdue, tasksCount.accepted, tasksCount.inspect],
+                backgroundColor: [
+                    'rgba(75, 192, 192, 0.5)',
+                    'rgba(201, 203, 207, 0.5)',
+                    'rgba(255, 99, 132, 0.5)',
+                    'rgba(255, 205, 86, 0.5)',
+                    'rgba(255, 145, 25, 0.5)',
+                ]
+            }]
+        };
+        const config = {
+            type: 'polarArea',
+            data: data,
+            options: {}
+        };
+        new Chart(tasksStat, config);
+    };
+    getTasksCount()
+</script>
+{% endblock content %}

@@ -1,0 +1,8 @@
+__pycache__
+migrations
+png
+media
+.vscode
+static
+psql
+cache

@@ -1,0 +1,20 @@
+{% extends "core/base.html" %}
+{% load static %}
+{% block link %}
+{% endblock link %}
+{% block title %}
+{{ title }}
+{% endblock title %}
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <form action="" method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <button type="submit" class="btn btn-dark">{{ button }}</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock content %}

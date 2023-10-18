@@ -1,0 +1,141 @@
+{% extends "testing/base_tests.html" %}
+{% load static %}
+{% block link %}
+{% endblock link %}
+{% block title %}
+{{ title }}
+{% endblock title %}
+{% block test_content %}
+<h1 class="mb-3">Список тестов</h1>
+{% if tests %}
+<table class="table table-responsive">
+    <thead>
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">Наименование</th>
+            <th scope="col"></th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for test in tests %}
+        <tr>
+            <th scope="row">{{ forloop.counter }}</th>
+            <td>{{ test.title }}</td>
+            <td>
+                <!-- Выпадающий список таблицы -->
+                <div class="dropdown">
+                    {% if 'TE' in privileges %}
+                    <button class="btn btn-light dropdown-toggle" type="button" data-bs-toggle="dropdown"
+                        aria-expanded="false">
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li>
+                            <button class="dropdown-item" data-bs-toggle="modal"
+                                data-bs-target="#deleteTest{{ test.pk }}">
+                                Удалить
+                            </button>
+                        </li>
+                        <li>
+                            <button class="dropdown-item" data-bs-toggle="modal"
+                                data-bs-target="#updateTest{{ test.pk }}">
+                                Редактировать навание
+                            </button>
+                        </li>
+                        <li>
+                            <a class="dropdown-item" href="{% url 'edit_test' test.pk %}">
+                                Редактирование вопросов
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item" href="{% url 'all_test_results' test.pk %}">
+                                Посмотреть все результаты
+                            </a>
+                        </li>
+                    </ul>
+                    {% endif %}
+                    <a class="btn btn-light" href="{% url 'solve_test' test.pk %}">
+                        Решить тест!
+                    </a>
+                </div>
+            </td>
+        </tr>
+        <!-- Модальное окно удаления теста -->
+        <div class="modal fade" id="deleteTest{{ test.pk }}" tabindex="-1"
+            aria-labelledby="deleteTest{{ test.pk }}Label" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="deleteTest{{ test.pk }}Label">Удаление теста</h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
+                    </div>
+                    <form action="{% url 'delete_test' test.pk %}" method="post">
+                        {% csrf_token %}
+                        <div class="modal-body">
+                            Вы действительно хотите удалить {{ test.title }}?
+                        </div>
+                        <div class="modal-footer">
+                            <button type="reset" class="btn btn-light" data-bs-dismiss="modal">Закрыть</button>
+                            <button type="submit" class="btn btn-danger">Удалить</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <!-- Модальное окно редактирования теста -->
+        <div class="modal fade" id="updateTest{{ test.pk }}" tabindex="-1"
+            aria-labelledby="updateTest{{ test.pk }}Label" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="updateTest{{ test.pk }}Label">Редактирование теста</h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
+                    </div>
+                    <form action="{% url 'update_test' test.pk %}" method="post">
+                        {% csrf_token %}
+                        <div class="modal-body">
+                            <label for="id_title">Название:</label>
+                            <input type="text" name="title" class="form-control" maxlength="200" required=""
+                                id="id_title" value="{{ test.title }}">
+                        </div>
+                        <div class="modal-footer">
+                            <button type="reset" class="btn btn-light" data-bs-dismiss="modal">Закрыть</button>
+                            <button type="submit" class="btn btn-secondary">Сохранить</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        {% endfor %}
+    </tbody>
+</table>
+{% else %}
+Нет тестов
+{% endif %}
+<div class="d-grid gap-2">
+    <button type="button" class="btn btn-outline-light" data-bs-toggle="modal" data-bs-target="#addTest">
+        <img src="{% static 'tasks/png/plus.png' %}" alt="Новый тест" style="width: 30px;">
+    </button>
+</div>
+<!-- Модальное окно создание теста -->
+<div class="modal fade" id="addTest" tabindex="-1" aria-labelledby="addTestLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="addTestLabel">Создать новый тест</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
+            </div>
+            <form action="" method="post">
+                <div class="modal-body">
+                    {% csrf_token %}
+                    {{ form.as_p }}
+                </div>
+                <div class="modal-footer">
+                    <button type="reset" class="btn btn-light" data-bs-dismiss="modal">Закрыть</button>
+                    <button type="submit" class="btn btn-secondary">Добавить</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock test_content %}

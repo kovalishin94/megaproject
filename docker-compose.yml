@@ -1,0 +1,12 @@
+version: '3.5'
+services:
+  psql:
+    image: postgres:latest
+    container_name: psql
+    ports:
+      - "5432:5432"
+    restart: always
+    volumes:
+      - /home/dev/crm/crm/psql:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_PASSWORD=1pHf4Bm90X.

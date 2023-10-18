@@ -1,0 +1,256 @@
+{% extends "core/base.html" %}
+{% load static %}
+{% block link %}
+<link rel="stylesheet" href="{% static 'staff/css/style.css' %}">
+<script src="{% static 'staff/js/staff.js' %}" defer></script>
+{% endblock link %}
+{% block title %}
+{{ title }}
+{% endblock title %}
+{% block content %}
+<div class="container-fluid text-center">
+    <div class="row">
+        <div class="col-md-12 text-start">
+            <a href="{% url 'employee_add' %}" class="btn btn-dark mb-3">
+                <img src="{% static 'staff/png/addEmployee.png' %}" alt="Добавить сотрудника"
+                    style="width: 20px; margin-bottom: 2px; padding: 0;">
+            </a>
+            <a href="{% url 'staff_to_excel' %}" class="btn btn-dark mb-3">
+                <img src="{% static 'staff/png/xls-file.png' %}" alt="Выгрузить в Excel"
+                    style="width: 20px; margin-bottom: 2px; padding: 0;">
+            </a>
+            <button class="btn btn-dark mb-3" type="button" data-bs-toggle="collapse"
+                data-bs-target="#collapseDepartments" aria-expanded="false" aria-controls="collapseDepartments">
+                Отделы
+            </button>
+            <!-- Вывод отделов -->
+            <div class="collapse mb-3" id="collapseDepartments">
+                <div class="card card-body">
+                    <div class="col-12 table-responsive">
+                        <table class="table table-light table-hover">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Отдел</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for department in departments %}
+                                <tr data-bs-toggle="modal" data-bs-target="#department{{ department.pk }}">
+                                    <div class="modal fade" id="department{{ department.pk }}" data-bs-backdrop="static"
+                                        data-bs-keyboard="false" tabindex="-1"
+                                        aria-labelledby="LabelDepartment{{ department.pk }}" aria-hidden="true">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h1 class="modal-title fs-5"
+                                                        id="LabelDepartment{{ department.pk }}">
+                                                        Редактирование отдела</h1>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                        aria-label="Закрыть"></button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <form action="{% url 'department_update' department.pk %}"
+                                                        method="post">
+                                                        {% csrf_token %}
+                                                        <label for="id_department">Наименование отдела</label>
+                                                        <input class="form-control" type="text" name="department"
+                                                            id="id_department" value="{{ department.title }}">
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="reset" class="btn btn-light"
+                                                        data-bs-dismiss="modal">Закрыть</button>
+                                                    <button type="submit" class="btn btn-secondary">Сохранить</button>
+                                                    </form>
+                                                    <button class="btn btn-danger"
+                                                        data-bs-target="#deleteDepartment{{ department.pk }}"
+                                                        data-bs-toggle="modal">Удалить</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="modal fade" id="deleteDepartment{{ department.pk }}"
+                                        data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+                                        aria-labelledby="LabelDeleteDepartment{{ department.pk }}" aria-hidden="true">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h1 class="modal-title fs-5"
+                                                        id="LabelDeleteDepartment{{ department.pk }}">
+                                                        Удаление отдела</h1>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                        aria-label="Закрыть"></button>
+                                                </div>
+                                                <form action="{% url 'department_delete' department.pk %}"
+                                                    method="post">
+                                                    <div class="modal-body">
+                                                        Удалить отдел "{{ department.title }}"?
+                                                        {% csrf_token %}
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="reset" class="btn btn-light"
+                                                            data-bs-target="#department{{ department.pk }}"
+                                                            data-bs-toggle="modal">Закрыть</button>
+                                                        <button type="submit" class="btn btn-danger">Удалить</button>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <td>
+                                        {{ department.title }}
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                        <div class="d-grid gap-2">
+                            <button type="button" class="btn btn-light" data-bs-toggle="modal"
+                                data-bs-target="#addDepartment">
+                                <img src="{% static 'tasks/png/plus.png' %}" alt="Новая задача" style="width: 30px;">
+                            </button>
+                        </div>
+                        <div class="modal fade" id="addDepartment" data-bs-backdrop="static" data-bs-keyboard="false"
+                            tabindex="-1" aria-labelledby="addDepartmentLabel" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h1 class="modal-title fs-5" id="addDepartmentLabel">Добавить новый отдел</h1>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                            aria-label="Закрыть"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <form action="{% url 'department_add' %}" method="post">
+                                            {% csrf_token %}
+                                            <label for="id_department_add">Наименование отдела</label>
+                                            <input class="form-control" type="text" name="department_add"
+                                                id="id_department_add">
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="reset" class="btn btn-light"
+                                            data-bs-dismiss="modal">Закрыть</button>
+                                        <button type="submit" class="btn btn-secondary">Сохранить</button>
+                                    </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <!-- Вывод списка всех сотрудников в виде таблицы -->
+        <div class="col-12 table-responsive">
+            <table class="table table-dark table-striped align-middle table-hover">
+                <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">ФИО</th>
+                        <th scope="col">Отдел</th>
+                        <th scope="col">Должность</th>
+                        <th scope="col">E-mail</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for employee in employees %}
+                    <tr data-bs-toggle="modal" data-bs-target="#modalemployeeview{{ employee.pk }}">
+                        <th scope="row">{{ forloop.counter }}</th>
+                        <td class="text-start">
+                            {% if employee.photo %} <img src="{{ employee.photo.url }}" alt=""
+                                style="width: 60px; height: 60px; border-radius: 50%; margin-right: 2em;">
+                            {% else %}
+                            <img src="{% static 'staff/png/zzz.png' %}" alt=""
+                                style="width: 60px; height: 60px; border-radius: 50%; margin-right: 2em;">
+                            {% endif %}
+                            {{ employee.last_name }} {{ employee.first_name }} {{ employee.surname }}
+
+                            <div class="modal fade" id="modalemployeeview{{ employee.pk }}" data-bs-backdrop="static"
+                                data-bs-keyboard="false" tabindex="-1"
+                                aria-labelledby="Employeeview{{ employee.pk }}Label" aria-hidden="true">
+                                <div class="modal-dialog modal-xl">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h1 class="modal-title fs-5" id="Employeeview{{ employee.pk }}Label">
+                                                {{ employee.last_name }} {{ employee.first_name }} {{ employee.surname}}
+                                            </h1>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                aria-label="Закрыть"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <div class="row">
+                                                <div class="col-md-4 col-12">
+                                                    {% if employee.photo %}
+                                                    <img src="{{ employee.photo.url }}" class="img-fluid" alt="...">
+                                                    {% else %}
+                                                    <img src="{% static 'staff/png/zzz.png' %}" class="img-fluid"
+                                                        alt="...">
+                                                    {% endif %}
+                                                </div>
+                                                <div class="col-md-8 col-12 text-start">
+                                                    <h5>Данные</h5>
+                                                    <div>E-mail: {{ employee.email }}</div>
+                                                    <div>Дата рождения: {{ employee.date_of_birth }}</div>
+                                                    {% if employee.department %}
+                                                    <div>Отдел: {{ employee.department }}</div>
+                                                    {% else %}
+                                                    {% endif %}
+                                                    <div>Должность: {{ employee.position }}</div>
+                                                    <div>Дата заключения трудового договора:
+                                                        {{ employee.agreement_date }}</div>
+                                                    {% if employee.test_results %}
+                                                    <div>Результаты пройденных тестов:
+                                                        {{ employee.test_results|safe }}</div>
+                                                    {% endif %}
+                                                    <!-- Виджет полноты заполнения данных сотрудника -->
+                                                    <h5 style="color: black;">Профайл заполнен на:</h5>
+                                                    <div class="progress mt-2" style="flex-grow: 1">
+                                                        <div class="progress-bar w-{{ employee.count_filling|floatformat:'0' }}"
+                                                            role="progressbar" aria-valuenow="25" aria-valuemin="0"
+                                                            aria-valuemax="100">
+                                                            {{ employee.count_filling|floatformat:'0' }}%
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-light"
+                                                data-bs-dismiss="modal">Закрыть</button>
+
+                                            <a href="{% url 'employee_update' employee.pk %}"
+                                                class="btn btn-secondary">Редактировать</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+                            {% if employee.department %}
+                            {{ employee.department }}
+                            {% else %}
+                            -
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if employee.position %}
+                            {{ employee.position }}
+                            {% else %}
+                            -
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if employee.email %}
+                            {{ employee.email }}
+                            {% else %}
+                            -
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock content %}

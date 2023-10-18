@@ -1,0 +1,22 @@
+{% extends "core/base.html" %}
+{% load static %}
+{% block link %}
+<script src="{% static 'userprofiles/js/user.js' %}" defer></script>
+{% endblock link %}
+{% block title %}
+{{ title }}
+{% endblock title %}
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-md-12 col-12">
+            <form method="post">
+                {% csrf_token %}
+                {{ form.as_div }}
+                {{ form2.as_p }}
+                <button type="submit" class="btn btn-dark mt-3">Сохранить</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock content %}

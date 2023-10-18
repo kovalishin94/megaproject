@@ -1,0 +1,38 @@
+{% extends "core/base.html" %}
+{% load static %}
+{% block title %}
+{{ title }}
+{% endblock title %}
+{% block content %}
+<div class="container-lg text-center">
+    <div class="row justify-content-md-center" style="height: 80vh;">
+        <div class="col-12 col-md-4 align-self-center">
+            <h1>Результаты теста {{ result.test.title }}</h1>
+            <canvas id="testResult" width="600" height="400"></canvas>
+            <h6>{{ result.description }}</h6>
+        </div>
+    </div>
+</div>
+<script>
+    const data = {
+        labels: [
+            'Правильные ответы',
+            'Не правильные ответы',
+        ],
+        datasets: [{
+            label: 'Колличество',
+            data: [Number('{{ result.count_right }}'), Number('{{ result.count_false }}')],
+            backgroundColor: [
+                'rgba(75, 192, 192, 0.5)',
+                'rgba(255, 99, 132, 0.5)',
+            ]
+        }]
+    };
+    const config = {
+        type: 'doughnut',
+        data: data,
+        options: {}
+    };
+    new Chart(testResult, config);
+</script>
+{% endblock content %}

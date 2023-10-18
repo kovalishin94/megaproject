@@ -1,0 +1,13 @@
+{% extends "tasks/tasks.html" %}
+{% load static %}
+{% block title %}
+{{ title }}
+{% endblock title %}
+{% block acceptedtasks_button %}
+<a href="{% url 'acceptedtasks' %}" class="btn btn-dark active" aria-current="page">Принятые задачи</a>
+{% endblock acceptedtasks_button %}
+{% block action %}
+{% if task.status == 'A' or task.status == 'R' %}
+<a href="{% url 'task_answer' task.pk %}" class="btn btn-dark">Отчитаться</a>
+{% endif %}
+{% endblock action %}

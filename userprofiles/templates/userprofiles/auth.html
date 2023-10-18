@@ -1,0 +1,41 @@
+{% extends "core/base.html" %}
+{% block title %}
+Вход
+{% endblock title %}
+{% block content %}
+{% load static %}
+<div class="container-lg">
+    <div class="row justify-content-center" style="height: 78vh">
+        <div class="col-6 align-self-center">
+            {% if messages %}
+            {% for message in messages %}
+            {% if message.tags == 'error' %}
+            <div class="alert alert-light" role="alert">
+                {{ message }}
+            </div>
+            {% else %}
+            <div class="alert alert-{{ message.tags }}" role="alert">
+                {{ message }}
+            </div>
+            {% endif %}
+            {% endfor %}
+            {% endif %}
+            <form method="post">
+                {% csrf_token %}
+                <div class="mb-3">
+                    <label for="username" class="form-label">Логин:</label>
+                    <input id="username" type="text" name="username" class="form-control">
+                </div>
+                <div class="mb-3">
+                    <label for="password" class="form-label">Пароль:</label>
+                    <input type="password" id="password" name="password" class="form-control">
+                </div>
+                <div class="mb-3 text-center">
+                    <button type="submit" class="btn btn-dark" style="width: 130px;"><img
+                            src="{% static 'core/png/login.png' %}" alt="Вход" width="28"></button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock content %}

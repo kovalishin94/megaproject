@@ -1,0 +1,138 @@
+{% extends "core/base.html" %}
+{% load static %}
+{% block link %}
+<link rel="stylesheet" href="{% static 'staff/css/style.css' %}">
+<script src="{% static 'staff/js/staff_add.js' %}" defer></script>
+{% endblock link %}
+{% block title %}
+{{ title }}
+{% endblock title %}
+{% block content %}
+<div class="container-fluid">
+    <form action="" method="post" enctype="multipart/form-data" name="addEmployee">
+        {% csrf_token %}
+        <div class="row mb-3">
+            <div class="col-md-2 col-12">
+                {% if obj.photo %}
+                <img src="{{ obj.photo.url }}" class="img-fluid" id="image">
+                {% else %}
+                <img src="{% static 'staff/png/zzz.png' %}" class="img-fluid" id="image">
+                {% endif %}
+            </div>
+            <div class="col-md-10 col-12">
+                <!-- ФИО -->
+                <div class="row">
+                    <div class="col-md-4 col-12 mb-2">
+                        <label for="last_name">Фамилия:</label>
+                        {{ form.last_name }}
+                        {{ form.last_name.errors }}
+                    </div>
+                    <div class="col-md-4 col-12 mb-2">
+                        <label for="first_name">Имя:</label>
+                        {{ form.first_name }}
+                        {{ form.first_name.errors }}
+                    </div>
+                    <div class="col-md-4 col-12 mb-2">
+                        <label for="surname">Отчество:</label>
+                        {{ form.surname }}
+                        {{ form.surname.errors }}
+                    </div>
+                </div>
+                <!-- Email, дата рождения, фото -->
+                <div class="row">
+                    <div class="col-md-4 col-12">
+                        <label for="email">E-mail:</label>
+                        {{ form.email }}
+                        {{ form.email.errors }}
+                    </div>
+                    <div class="col-md-4 col-12">
+                        <label for="date_of_birth">Дата рождения:</label>
+                        {{ form.date_of_birth }}
+                        {{ form.date_of_birth.errors }}
+                    </div>
+                    <div class="col-md-4 col-12">
+                        <label for="photo">Фото:</label>
+                        <div class="input-group mb-3">
+                            <button class="btn btn-outline-secondary" type="button"
+                                onclick="getElementById('id_photo').value=null; document.getElementById('image').src='/static/staff/png/zzz.png';">Очистить</button>
+                            {{ form.photo }}
+                            {{ form.photo.errors }}
+                            {% if obj.photo %}
+                            <p>На данный момент используется файл: <a href="{{ obj.photo.url }}">{{ obj.photo.url }}</a>
+                            </p>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                <!-- Отдел, должность, дата договора -->
+                <div class="row mb-3">
+                    <div class="col-md-4 col-12">
+                        <label for="department">Отдел:</label>
+                        {{ form.department }}
+                        {{ form.department.errors }}
+                    </div>
+                    <div class="col-md-4 col-12">
+                        <label for="department">Должность:</label>
+                        {{ form.position }}
+                        {{ form.position.errors }}
+                    </div>
+                    <div class="col-md-4 col-12">
+                        <label for="agreement_date">Дата договора:</label>
+                        {{ form.agreement_date }}
+                        {{ form.agreement_date.errors }}
+                    </div>
+                </div>
+                <div class="row mb-2">
+                    <div class="col-md-4 col-12">
+                        {% if 'AD' in privileges %}
+                        {% if obj.profile %}
+                        Пользователь привязан к профилю: {{ obj.profile }}
+                        <button class="btn btn-dark" type="button" id="untiebutton">Отвязать</button>
+                        {% else %}
+                        <label for="profile">Выберите профиль пользователя для авторизации:</label>
+                        {{ form.profile }}
+                        {{ form.profile.errors }}
+                        {% endif %}
+                        {% endif %}
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-dark">{{ button }}</button>
+                {% if obj %}
+                <!-- Кнопка вызова модального окна для удаления сотрудника -->
+                <button type="button" class="btn btn-danger" data-bs-toggle="modal"
+                    data-bs-target="#modalemployee{{ obj.pk }}">Удалить
+                </button>
+            </div>
+        </div>
+    </form>
+    <form action="{% url 'untie_profile' obj.pk %}" method="post" id="untieform">
+        {% csrf_token %}
+    </form>
+    <!-- Модальное окно с подтверждением удаления сотрудника -->
+    <div class="modal fade" id="modalemployee{{ obj.pk }}" data-bs-backdrop="static" data-bs-keyboard="false"
+        tabindex="-1" aria-labelledby="Emploee{{ obj.pk }}Label" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="Emploee{{ obj.pk }}Label">
+                        Удалить
+                    </h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
+                </div>
+                <div class="modal-body">
+                    Вы действительно хотите удалить сотрудника {{ obj.last_name }}
+                    {{ obj.first_name }} {{ obj.surname }}
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
+                    <form action="{% url 'employee_delete' obj.pk %}" method="post">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-danger">Удалить</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock content %}

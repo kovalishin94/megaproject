@@ -1,0 +1,267 @@
+{% extends "core/base.html" %}
+{% load static %}
+{% block link %}
+<link rel="stylesheet" href="{% static 'tasks/css/style.css' %}">
+{% endblock link %}
+{% block title %}
+{{ title }}
+{% endblock title %}
+{% block content %}
+<div class="container-fluid">
+    <!-- Кнопки переходов по вкладкам -->
+    <div class="row mb-3">
+        <div class="col-12">
+            <div class="table-responsive">
+                <div class="btn-group">
+                    {% block mytasks_button %}
+                    {% if 'T' in privileges %}
+                    <a href="{% url 'tasks' %}" class="btn btn-dark">Созданные задачи</a>
+                    {% endif %}
+                    {% endblock mytasks_button %}
+                    {% block solvedtasks_button %}
+                    <a href="{% url 'solvedtasks' %}" class="btn btn-dark">Завершенные задачи</a>
+                    {% endblock solvedtasks_button %}
+                    {% block delegatedtasks %}
+                    {% if 'TD' in privileges %}
+                    <a href="{% url 'delegatedtasks' %}" class="btn btn-dark">Перепорученные задачи</a>
+                    {% endif %}
+                    {% endblock delegatedtasks %}
+                    {% block newtasks_button %}
+                    <a href="{% url 'newtasks' %}" class="btn btn-dark">Поступившие задачи</a>
+                    {% endblock newtasks_button %}
+                    {% block acceptedtasks_button %}
+                    <a href="{% url 'acceptedtasks' %}" class="btn btn-dark">Принятые задачи</a>
+                    {% endblock acceptedtasks_button %}
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Таблица с задачами -->
+    <div class="row">
+        <div class="col-12">
+            {% if tasks %}
+            <div class="table-responsive">
+                <table class="table table-dark table-hover">
+                    <thead>
+                        <tr class="text-center">
+                            <th scope="col">№</th>
+                            <th scope="col">Статус</th>
+                            <th scope="col">Заголовок</th>
+                            <th scope="col">Описание</th>
+                            {% block th_employee %}
+                            <th scope="col">Задачу создал</th>
+                            {% endblock th_employee %}
+                            <th scope="col">Срок исполнения</th>
+                            <th scope="col">Дата изменения</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for task in tasks %}
+                        {% block action_modals %}{% endblock action_modals %}
+                        <tr data-bs-toggle="modal" data-bs-target="#{{ task.pk }}Modal" class="text-center">
+                            <div class="modal fade" id="{{ task.pk }}Modal" tabindex="-1"
+                                aria-labelledby="{{ task.pk }}ModalLabel" aria-hidden="true">
+                                <div class="modal-dialog modal-xl modal-dialog-scrollable">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h1 class="modal-title fs-5" id="{{ task.pk }}ModalLabel">
+                                                {{ task.title }}</h1>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                aria-label="Закрыть"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <div class="row">
+                                                <div class="col-md-2 col-6 mb-2">
+                                                    Дата создания:
+                                                </div>
+                                                <div class="col-md-10 col-6 mb-2">
+                                                    {{ task.created_at }}
+                                                </div>
+                                                <hr>
+                                                <div class="col-md-2 col-6 mb-2">
+                                                    Дата последнего изменения:
+                                                </div>
+                                                <div class="col-md-10 col-6 mb-2">
+                                                    {{ task.updated_at }}
+                                                </div>
+                                                <hr>
+                                                <div class="col-md-2 col-6 mb-2">
+                                                    Срок исполнения:
+                                                </div>
+                                                <div class="col-md-10 col-6 mb-2">
+                                                    {{ task.deadline }}
+                                                </div>
+                                                <hr>
+                                                {% if task.status != 'C' %}
+                                                <div class="col-md-2 col-6 mb-2">
+                                                    Статус:
+                                                </div>
+                                                <div class="col-md-10 col-6 mb-2">
+                                                    {{ task.get_status_display }}
+                                                </div>
+                                                <hr>
+                                                {% endif %}
+                                                {% block tb_employee %}
+                                                <div class="col-md-2 col-12">
+                                                    Задача создана:
+                                                </div>
+                                                <div class="col-md-10 col-12">
+                                                    {% if task.created_who.photo %} <img
+                                                        src="{{ task.created_who.photo.url }}" alt=""
+                                                        style="width: 60px; height: 60px; border-radius: 50%; margin-right: 2em;">
+                                                    {% else %}
+                                                    <img src="{% static 'staff/png/zzz.png' %}" alt=""
+                                                        style="width: 60px; height: 60px; border-radius: 50%; margin-right: 2em;">
+                                                    {% endif %}
+                                                    {{ task.created_who }}
+                                                </div>
+                                                {% endblock tb_employee %}
+                                                <hr>
+                                                {% if task.delegated_employee %}
+                                                <div class="col-md-2 col-12 mb-2">
+                                                    Делегирована на:
+                                                </div>
+                                                <div class="col-md-10 col-12 mb-2">
+                                                    {% if task.delegated_employee.photo %} <img
+                                                        src="{{ task.delegated_employee.photo.url }}" alt=""
+                                                        style="width: 60px; height: 60px; border-radius: 50%; margin-right: 2em;">
+                                                    {% else %}
+                                                    <img src="{% static 'staff/png/zzz.png' %}" alt=""
+                                                        style="width: 60px; height: 60px; border-radius: 50%; margin-right: 2em;">
+                                                    {% endif %}
+                                                    {{ task.delegated_employee }}
+                                                    {% if task.status == 'D' %}
+                                                    ещё не принял задачу
+                                                    {% endif %}
+                                                </div>
+                                                <hr>
+                                                {% endif %}
+                                                {% if task.task_file %}
+                                                <div class="col-md-2 col-12 mb-2">
+                                                    Файл задачи:
+                                                </div>
+                                                <div class="col-md-10 col-12 mb-2">
+                                                    {{ task.tfilename }}
+                                                    <a href="{{ task.task_file.url }}">
+                                                        <img src="{% static 'tasks/png/file.png' %}" alt=""
+                                                            style="width: 20px; margin-bottom: 2px; padding: 0;"
+                                                            data-bs-toggle="tooltip" data-bs-placement="right"
+                                                            data-bs-title="Скачать">
+                                                    </a>
+                                                </div>
+                                                <hr>
+                                                {% endif %}
+                                                <div class="col-md-2 col-12 mb-2">
+                                                    Описание:
+                                                </div>
+                                                <div class="col-md-10 col-12 mb-2">
+                                                    {{ task.description }}
+                                                </div>
+                                                <hr>
+                                                {% if task.answer %}
+                                                <div class="col-md-2 col-12 mb-2">
+                                                    Ответ:
+                                                </div>
+                                                <div class="col-md-10 col-12 mb-2">
+                                                    {{ task.answer}}
+                                                </div>
+                                                <hr>
+                                                {% endif %}
+                                                {% if task.answer_file %}
+                                                <div class="col-md-2 col-12 mb-2">
+                                                    Файл ответа:
+                                                </div>
+                                                <div class="col-md-10 col-12 mb-2">
+                                                    {{ task.afilename }}
+                                                    <a href="{{ task.answer_file.url }}">
+                                                        <img src="{% static 'tasks/png/file.png' %}" alt=""
+                                                            style="width: 20px; margin-bottom: 2px; padding: 0;"
+                                                            data-bs-toggle="tooltip" data-bs-placement="right"
+                                                            data-bs-title="Скачать">
+                                                    </a>
+                                                </div>
+                                                <hr>
+                                                {% endif %}
+                                                {% if task.comments %}
+                                                <div class="col-md-2 col-12 mb-2">
+                                                    Комментарии:
+                                                </div>
+                                                <div class="col-md-10 col-12 mb-2">
+                                                    {{ task.comments|safe }}
+                                                </div>
+                                                <hr>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary"
+                                                data-bs-dismiss="modal">Закрыть</button>
+                                            {% block action %}
+                                            <a href="{% url 'task_update' task.pk %}" class="btn btn-dark">Редактировать
+                                                задачу</a>
+                                            {% if task.status == 'I' %}
+                                            <a href="{% url 'task_solve' task.pk %}" class="btn btn-success">Принять</a>
+                                            <button class="btn btn-warning" data-bs-target="#{{ task.pk }}Modal3"
+                                                data-bs-toggle="modal">Отклонить</button>
+                                            {% endif %}
+                                            <button class="btn btn-danger" data-bs-target="#{{ task.pk }}Modal2"
+                                                data-bs-toggle="modal">Удалить</button>
+                                            {% endblock action %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <td>{{ task.pk }}</td>
+                            <td>{% block status_icon %}
+                                {% if task.status == 'C' %}
+                                <img src="{% static 'tasks/png/created.png' %}" alt="Поручена"
+                                    style="width: 120px; margin-bottom: 2px; padding: 0;">
+                                {% endif %}
+                                {% if task.status == 'A' %}
+                                <img src="{% static 'tasks/png/accepted.png' %}" alt="В работе"
+                                    style="width: 120px; margin-bottom: 2px; padding: 0;">
+                                {% endif %}
+                                {% if task.status == 'I' %}
+                                <img src="{% static 'tasks/png/inspect.png' %}" alt="На проверке"
+                                    style="width: 120px; margin-bottom: 2px; padding: 0;">
+                                {% endif %}
+                                {% if task.status == 'S' %}
+                                <img src="{% static 'tasks/png/solved.png' %}" alt="Выполнена"
+                                    style="width: 120px; margin-bottom: 2px; padding: 0;">
+                                {% endif %}
+                                {% if task.status == 'D' %}
+                                <img src="{% static 'tasks/png/delegated.png' %}" alt="Перепоручена"
+                                    style="width: 120px; margin-bottom: 2px; padding: 0;">
+                                {% endif %}
+                                {% if task.status == 'R' %}
+                                <img src="{% static 'tasks/png/receive.png' %}" alt="Доработка"
+                                    style="width: 120px; margin-bottom: 2px; padding: 0;">
+                                {% endif %}
+                                {% endblock status_icon %}
+                            </td>
+                            <td>{{ task.title }}</td>
+                            <td>{{ task.description|truncatewords:8 }}</td>
+                            {% block tr_employee %}
+                            <td>{{ task.created_who }}</td>
+                            {% endblock %}
+
+                            <td>{{ task.deadline }} {% if cur_date.date > task.deadline %}
+                                <img src="{% static 'tasks/png/attention.png' %}" alt="Просрочена"
+                                    style="width: 20px; margin-bottom: 2px; padding: 0;" data-bs-toggle="tooltip"
+                                    data-bs-placement="top" data-bs-title="Задача просрочена">{% endif %}
+                            </td>
+                            <td>{{ task.updated_at }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <p>Нет задач</p>
+            {% endif %}
+        </div>
+    </div>
+    {% block add_task %}
+    {% endblock add_task %}
+</div>
+{% endblock content %}

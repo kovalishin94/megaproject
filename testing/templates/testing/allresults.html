@@ -1,0 +1,38 @@
+{% extends "testing/base_tests.html" %}
+{% load static %}
+{% block link %}
+{% endblock link %}
+{% block title %}
+{{ title }}
+{% endblock title %}
+{% block test_content %}
+<h1 class="mb-3">Результаты теста "{{ test_title }}"</h1>
+{% if results %}
+<table class="table table-responsive">
+    <thead>
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">Сотрудник</th>
+            <th scope="col">Результат</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for result in results %}
+        <tr>
+            <td>
+                {{ forloop.counter }}
+            </td>
+            <td>
+                {{ result.employee }}
+            </td>
+            <td>
+                {{ result.description }}
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% else %}
+Тест никто не проходил
+{% endif %}
+{% endblock test_content %}

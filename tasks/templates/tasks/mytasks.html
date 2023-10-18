@@ -1,0 +1,88 @@
+{% extends "tasks/tasks.html" %}
+{% load static %}
+{% block title %}
+{{ title }}
+{% endblock title %}
+{% block mytasks_button %}
+<a href="{% url 'tasks' %}" class="btn btn-dark active" aria-current="page">Созданные задачи</a>
+{% endblock mytasks_button %}
+{% block th_employee %}<th scope="col">Исполнитель</th>{% endblock th_employee %}
+{% block action_modals %}
+<div class="modal fade" id="{{ task.pk }}Modal2" aria-hidden="true" aria-labelledby="{{ task.pk }}ModalLabel2"
+    tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="{{ task.pk }}ModalLabel2">
+                    Удаление задачи
+                </h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
+            </div>
+            <div class="modal-body">
+                Вы действительно хотите удалить задачу "{{ task.title }}"
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" data-bs-target="#{{ task.pk }}Modal"
+                    data-bs-toggle="modal">Назад</button>
+                <form action="{% url 'task_delete' task.pk %}" method="post">
+                    {% csrf_token %}
+                    <button class="btn btn-danger" type="submit">Удалить</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="{{ task.pk }}Modal3" aria-hidden="true" aria-labelledby="{{ task.pk }}ModalLabel3"
+    tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="{{ task.pk }}ModalLabel3">
+                    Отклонение задачи
+                </h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
+            </div>
+            <div class="modal-body">
+                <form action="{% url 'task_to_receive' task.pk %}" method="post">
+                    {% csrf_token %}
+                    <label for="id_comments">Замечания</label>
+                    <textarea name="comments" id="id_comments" class="form-control" cols="30" rows="10"
+                        required=""></textarea>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" type="reset" data-bs-target="#{{ task.pk }}Modal"
+                    data-bs-toggle="modal">Назад</button>
+                <button class="btn btn-warning" type="submit">Отклонить</button>
+            </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock action_modals %}
+{% block tb_employee %}
+<div class="col-md-2 col-12 mb-2">
+    Исполнитель:
+</div>
+<div class="col-md-10 col-12 mb-2">
+    {% if task.target_employee.photo %} <img src="{{ task.target_employee.photo.url }}" alt=""
+        style="width: 60px; height: 60px; border-radius: 50%; margin-right: 2em;">
+    {% else %}
+    <img src="{% static 'staff/png/zzz.png' %}" alt=""
+        style="width: 60px; height: 60px; border-radius: 50%; margin-right: 2em;">
+    {% endif %}
+    {{ task.target_employee }}
+    {% if task.status == 'C' %}
+    ещё не принял задачу
+    {% endif %}
+</div>
+{% endblock tb_employee %}
+{% block tr_employee %}
+<td>{{ task.target_employee}}</td>
+{% endblock %}
+{% block add_task %}    
+<div class="row ms-2 me-2">
+    <a href="{% url 'task_add' %}" class="btn btn-light" data-bs-toggle="tooltip" data-bs-placement="right"
+    data-bs-title="Создать задачу">
+    <img src="{% static 'tasks/png/plus.png' %}" alt="Новая задача" style="width: 30px;"></a>
+</div>
+{% endblock add_task %}

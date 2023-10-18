@@ -1,0 +1,37 @@
+{% extends "testing/base_tests.html" %}
+{% load static %}
+{% block link %}
+<link rel="stylesheet" href="{% static 'testing/css/style.css' %}">
+{% endblock link %}
+{% block title %}
+{{ title }}
+{% endblock title %}
+{% block test_content %}
+<h1 class="mb-3">Тест "{{ test.title }}"</h1>
+<div class="row">
+    <form action="" method="post">
+        {% csrf_token %}
+        {% for question in questions %}
+        <div class="col-12 mb-3">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title mb-3">{{ forloop.counter }}. {{ question.title }}</h5>
+                    {% for choice in question.choice_set.all %}
+                    <p>
+                    <div class="form_radio_btn">
+                        <input type="radio" name="question{{ question.pk }}" id="choice{{ choice.pk }}"
+                            value="{{ choice.pk }}" required="">
+                        <label for="choice{{ choice.pk }}">
+                            {{ choice.order_number }}. {{ choice.title }}
+                        </label>
+                    </div>
+                    </p>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+        <button type="submit" class="btn btn-secondary">Отправить</button>
+    </form>
+</div>
+{% endblock test_content %}
