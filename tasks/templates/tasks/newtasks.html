@@ -20,7 +20,7 @@
             <form action="" method="post">
                 {% csrf_token %}
                 <div class="modal-body">
-                    <label for="id_delegated_employee">Делегировать на:</label>
+                    <label for="id_delegated_employee">Перепоручить:</label>
                     <select name="delegated_employee" id="id_delegated_employee" class="form-control">
                         <option value="" selected=""></option>
                         {% for i in delegate_list %}
@@ -32,7 +32,7 @@
                 <div class="modal-footer">
                     <button class="btn btn-secondary" data-bs-target="#{{ task.pk }}Modal" data-bs-toggle="modal"
                         type="reset">Назад</button>
-                    <button class="btn btn-success" type="submit">Делегировать</button>
+                    <button class="btn btn-success" type="submit">Перепоручить</button>
                 </div>
             </form>
         </div>

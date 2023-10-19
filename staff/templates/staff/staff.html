@@ -171,7 +171,8 @@
                                 <div class="modal-dialog modal-xl">
                                     <div class="modal-content">
                                         <div class="modal-header">
-                                            <h1 class="modal-title fs-5" id="Employeeview{{ employee.pk }}Label">
+                                            <h1 class="modal-title fs-5" id="Employeeview{{ employee.pk }}Label">Данные
+                                                сотрудника
                                                 {{ employee.last_name }} {{ employee.first_name }} {{ employee.surname}}
                                             </h1>
                                             <button type="button" class="btn-close" data-bs-dismiss="modal"
@@ -179,7 +180,7 @@
                                         </div>
                                         <div class="modal-body">
                                             <div class="row">
-                                                <div class="col-md-4 col-12">
+                                                <div class="col-md-4 col-12 mb-3">
                                                     {% if employee.photo %}
                                                     <img src="{{ employee.photo.url }}" class="img-fluid" alt="...">
                                                     {% else %}
@@ -187,28 +188,102 @@
                                                         alt="...">
                                                     {% endif %}
                                                 </div>
-                                                <div class="col-md-8 col-12 text-start">
-                                                    <h5>Данные</h5>
-                                                    <div>E-mail: {{ employee.email }}</div>
-                                                    <div>Дата рождения: {{ employee.date_of_birth }}</div>
-                                                    {% if employee.department %}
-                                                    <div>Отдел: {{ employee.department }}</div>
-                                                    {% else %}
-                                                    {% endif %}
-                                                    <div>Должность: {{ employee.position }}</div>
-                                                    <div>Дата заключения трудового договора:
-                                                        {{ employee.agreement_date }}</div>
+                                                <div class="col-md-8 col-12">
+                                                    <div class="row">
+                                                        <div class="col-md-4 col-12">
+                                                            <div class="card text-bg-light mb-3">
+                                                                <div class="card-header">E-mail</div>
+                                                                <div class="card-body">
+                                                                    {% if employee.email %}
+                                                                    <p class="card-text">{{ employee.email }}</p>
+                                                                    {% else %}
+                                                                    <p class="card-text">Нет информации</p>
+                                                                    {% endif %}
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-4 col-12">
+                                                            <div class="card text-bg-light mb-3">
+                                                                <div class="card-header">Дата рождения</div>
+                                                                <div class="card-body">
+                                                                    {% if employee.date_of_birth %}
+                                                                    <p class="card-text">{{ employee.date_of_birth }}
+                                                                    </p>
+                                                                    {% else %}
+                                                                    <p class="card-text">Нет информации</p>
+                                                                    {% endif %}
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-4 col-12">
+                                                            <div class="card text-bg-light mb-3">
+                                                                <div class="card-header">Дата трудоустройства</div>
+                                                                <div class="card-body">
+                                                                    {% if employee.agreement_date %}
+                                                                    <p class="card-text">{{ employee.agreement_date }}
+                                                                    </p>
+                                                                    {% else %}
+                                                                    <p class="card-text">Нет информации</p>
+                                                                    {% endif %}
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="col-md-6 col-12">
+                                                            <div class="card text-bg-light mb-3">
+                                                                <div class="card-header">Отдел</div>
+                                                                <div class="card-body">
+                                                                    {% if employee.department %}
+                                                                    <p class="card-text">{{ employee.department }}</p>
+                                                                    {% else %}
+                                                                    <p class="card-text">Нет информации</p>
+                                                                    {% endif %}
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-6 col-12">
+                                                            <div class="card text-bg-light mb-3">
+                                                                <div class="card-header">Должность</div>
+                                                                <div class="card-body">
+                                                                    {% if employee.position %}
+                                                                    <p class="card-text">{{ employee.position }}</p>
+                                                                    {% else %}
+                                                                    <p class="card-text">Нет информации</p>
+                                                                    {% endif %}
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
                                                     {% if employee.test_results %}
-                                                    <div>Результаты пройденных тестов:
-                                                        {{ employee.test_results|safe }}</div>
+                                                    <div class="col-12 text-start">
+                                                        <div class="card text-bg-success mb-3">
+                                                            <div class="card-header">Результаты пройденных тестов:</div>
+                                                            <div class="card-body">
+                                                                <p class="card-text">{{ employee.test_results|safe }}
+                                                                </p>
+                                                            </div>
+                                                        </div>
+                                                    </div>
                                                     {% endif %}
                                                     <!-- Виджет полноты заполнения данных сотрудника -->
-                                                    <h5 style="color: black;">Профайл заполнен на:</h5>
-                                                    <div class="progress mt-2" style="flex-grow: 1">
-                                                        <div class="progress-bar w-{{ employee.count_filling|floatformat:'0' }}"
-                                                            role="progressbar" aria-valuenow="25" aria-valuemin="0"
-                                                            aria-valuemax="100">
-                                                            {{ employee.count_filling|floatformat:'0' }}%
+                                                    <div class="col-12 text-center">
+                                                        <div class="card text-bg-light mb-3">
+                                                            <div class="card-header">Процент заполнения данных о
+                                                                сотруднике</div>
+                                                            <div class="card-body">
+                                                                <div class="progress mt-2" style="flex-grow: 1">
+                                                                    <div class="progress-bar w-{{ employee.count_filling|floatformat:'0' }}"
+                                                                        role="progressbar" aria-valuenow="25"
+                                                                        aria-valuemin="0" aria-valuemax="100">
+                                                                        {{ employee.count_filling|floatformat:'0' }}%
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="card-footer text-muted">
+                                                                Последние изменения {{ employee.updated_at|timesince }}
+                                                                назад
+                                                            </div>
                                                         </div>
                                                     </div>
                                                 </div>

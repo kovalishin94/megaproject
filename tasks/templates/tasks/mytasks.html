@@ -59,30 +59,13 @@
     </div>
 </div>
 {% endblock action_modals %}
-{% block tb_employee %}
-<div class="col-md-2 col-12 mb-2">
-    Исполнитель:
-</div>
-<div class="col-md-10 col-12 mb-2">
-    {% if task.target_employee.photo %} <img src="{{ task.target_employee.photo.url }}" alt=""
-        style="width: 60px; height: 60px; border-radius: 50%; margin-right: 2em;">
-    {% else %}
-    <img src="{% static 'staff/png/zzz.png' %}" alt=""
-        style="width: 60px; height: 60px; border-radius: 50%; margin-right: 2em;">
-    {% endif %}
-    {{ task.target_employee }}
-    {% if task.status == 'C' %}
-    ещё не принял задачу
-    {% endif %}
-</div>
-{% endblock tb_employee %}
 {% block tr_employee %}
 <td>{{ task.target_employee}}</td>
 {% endblock %}
-{% block add_task %}    
+{% block add_task %}
 <div class="row ms-2 me-2">
     <a href="{% url 'task_add' %}" class="btn btn-light" data-bs-toggle="tooltip" data-bs-placement="right"
-    data-bs-title="Создать задачу">
-    <img src="{% static 'tasks/png/plus.png' %}" alt="Новая задача" style="width: 30px;"></a>
+        data-bs-title="Создать задачу">
+        <img src="{% static 'tasks/png/plus.png' %}" alt="Новая задача" style="width: 30px;"></a>
 </div>
 {% endblock add_task %}

@@ -71,125 +71,142 @@
                                         </div>
                                         <div class="modal-body">
                                             <div class="row">
-                                                <div class="col-md-2 col-6 mb-2">
-                                                    Дата создания:
+                                                <div class="card-group">
+                                                    <div class="card text-bg-light mb-3">
+                                                        <div class="card-header">Статус</div>
+                                                        <div class="card-body">
+                                                            <p class="card-text">{{ task.get_status_display }}</p>
+                                                        </div>
+                                                    </div>
+                                                    <div class="card text-bg-light mb-3">
+                                                        <div class="card-header">Дата создания</div>
+                                                        <div class="card-body">
+                                                            <p class="card-text">{{ task.created_at }}</p>
+                                                        </div>
+                                                    </div>
+                                                    <div class="card text-bg-light mb-3">
+                                                        <div class="card-header">Дата последнего изменения</div>
+                                                        <div class="card-body">
+                                                            <p class="card-text">{{ task.updated_at }}</p>
+                                                        </div>
+                                                    </div>
+                                                    <div class="card text-bg-danger mb-3">
+                                                        <div class="card-header">Срок исполнения</div>
+                                                        <div class="card-body">
+                                                            <p class="card-text">{{ task.deadline }}</p>
+                                                        </div>
+                                                    </div>
                                                 </div>
-                                                <div class="col-md-10 col-6 mb-2">
-                                                    {{ task.created_at }}
-                                                </div>
-                                                <hr>
-                                                <div class="col-md-2 col-6 mb-2">
-                                                    Дата последнего изменения:
-                                                </div>
-                                                <div class="col-md-10 col-6 mb-2">
-                                                    {{ task.updated_at }}
-                                                </div>
-                                                <hr>
-                                                <div class="col-md-2 col-6 mb-2">
-                                                    Срок исполнения:
-                                                </div>
-                                                <div class="col-md-10 col-6 mb-2">
-                                                    {{ task.deadline }}
-                                                </div>
-                                                <hr>
-                                                {% if task.status != 'C' %}
-                                                <div class="col-md-2 col-6 mb-2">
-                                                    Статус:
-                                                </div>
-                                                <div class="col-md-10 col-6 mb-2">
-                                                    {{ task.get_status_display }}
-                                                </div>
-                                                <hr>
-                                                {% endif %}
-                                                {% block tb_employee %}
-                                                <div class="col-md-2 col-12">
-                                                    Задача создана:
-                                                </div>
-                                                <div class="col-md-10 col-12">
-                                                    {% if task.created_who.photo %} <img
-                                                        src="{{ task.created_who.photo.url }}" alt=""
-                                                        style="width: 60px; height: 60px; border-radius: 50%; margin-right: 2em;">
-                                                    {% else %}
-                                                    <img src="{% static 'staff/png/zzz.png' %}" alt=""
-                                                        style="width: 60px; height: 60px; border-radius: 50%; margin-right: 2em;">
+                                                <div class="card-group">
+                                                    <div class="card text-bg-light mb-3">
+                                                        <div class="card-header">Автор</div>
+                                                        <div class="card-body">
+                                                            <p class="card-text">{% if task.created_who.photo %}
+                                                                <img src="{{ task.created_who.photo.url }}" alt=""
+                                                                    style="width: 60px; height: 60px; border-radius: 50%; margin-right: 2em;">
+                                                                {% else %}
+                                                                <img src="{% static 'staff/png/zzz.png' %}" alt=""
+                                                                    style="width: 60px; height: 60px; border-radius: 50%; margin-right: 2em;">
+                                                                {% endif %}
+                                                                {{ task.created_who }}
+                                                            </p>
+                                                        </div>
+                                                    </div>
+                                                    <div class="card text-bg-light mb-3">
+                                                        <div class="card-header">Исполнитель</div>
+                                                        <div class="card-body">
+                                                            <p class="card-text">{% if task.target_employee.photo %}
+                                                                <img src="{{ task.target_employee.photo.url }}" alt=""
+                                                                    style="width: 60px; height: 60px; border-radius: 50%; margin-right: 2em;">
+                                                                {% else %}
+                                                                <img src="{% static 'staff/png/zzz.png' %}" alt=""
+                                                                    style="width: 60px; height: 60px; border-radius: 50%; margin-right: 2em;">
+                                                                {% endif %}
+                                                                {{ task.target_employee }}
+                                                            </p>
+                                                        </div>
+                                                    </div>
+                                                    {% if task.delegated_employee %}
+                                                    <div class="card text-bg-light mb-3">
+                                                        <div class="card-header">Делегирована на</div>
+                                                        <div class="card-body">
+                                                            <p class="card-text">{% if task.delegated_employee.photo %}
+                                                                <img src="{{ task.delegated_employee.photo.url }}"
+                                                                    alt=""
+                                                                    style="width: 60px; height: 60px; border-radius: 50%; margin-right: 2em;">
+                                                                {% else %}
+                                                                <img src="{% static 'staff/png/zzz.png' %}" alt=""
+                                                                    style="width: 60px; height: 60px; border-radius: 50%; margin-right: 2em;">
+                                                                {% endif %}
+                                                                {{ task.delegated_employee }}
+                                                            </p>
+                                                        </div>
+                                                    </div>
                                                     {% endif %}
-                                                    {{ task.created_who }}
                                                 </div>
-                                                {% endblock tb_employee %}
-                                                <hr>
-                                                {% if task.delegated_employee %}
-                                                <div class="col-md-2 col-12 mb-2">
-                                                    Делегирована на:
-                                                </div>
-                                                <div class="col-md-10 col-12 mb-2">
-                                                    {% if task.delegated_employee.photo %} <img
-                                                        src="{{ task.delegated_employee.photo.url }}" alt=""
-                                                        style="width: 60px; height: 60px; border-radius: 50%; margin-right: 2em;">
-                                                    {% else %}
-                                                    <img src="{% static 'staff/png/zzz.png' %}" alt=""
-                                                        style="width: 60px; height: 60px; border-radius: 50%; margin-right: 2em;">
-                                                    {% endif %}
-                                                    {{ task.delegated_employee }}
-                                                    {% if task.status == 'D' %}
-                                                    ещё не принял задачу
-                                                    {% endif %}
-                                                </div>
-                                                <hr>
-                                                {% endif %}
                                                 {% if task.task_file %}
-                                                <div class="col-md-2 col-12 mb-2">
-                                                    Файл задачи:
+                                                <div class="col-12">
+                                                    <div class="card text-bg-light mb-3">
+                                                        <div class="card-header">Файл задачи</div>
+                                                        <div class="card-body">
+                                                            <p class="card-text">{{ task.tfilename }}
+                                                                <a href="{{ task.task_file.url }}">
+                                                                    <img src="{% static 'tasks/png/file.png' %}" alt=""
+                                                                        style="width: 20px; margin-bottom: 2px; padding: 0;"
+                                                                        data-bs-toggle="tooltip"
+                                                                        data-bs-placement="right"
+                                                                        data-bs-title="Скачать">
+                                                                </a>
+                                                            </p>
+                                                        </div>
+                                                    </div>
                                                 </div>
-                                                <div class="col-md-10 col-12 mb-2">
-                                                    {{ task.tfilename }}
-                                                    <a href="{{ task.task_file.url }}">
-                                                        <img src="{% static 'tasks/png/file.png' %}" alt=""
-                                                            style="width: 20px; margin-bottom: 2px; padding: 0;"
-                                                            data-bs-toggle="tooltip" data-bs-placement="right"
-                                                            data-bs-title="Скачать">
-                                                    </a>
-                                                </div>
-                                                <hr>
                                                 {% endif %}
-                                                <div class="col-md-2 col-12 mb-2">
-                                                    Описание:
+                                                <div class="col-12">
+                                                    <div class="card text-bg-light mb-3">
+                                                        <div class="card-header">Описание</div>
+                                                        <div class="card-body">
+                                                            <p class="card-text">{{ task.description }}</p>
+                                                        </div>
+                                                    </div>
                                                 </div>
-                                                <div class="col-md-10 col-12 mb-2">
-                                                    {{ task.description }}
-                                                </div>
-                                                <hr>
-                                                {% if task.answer %}
-                                                <div class="col-md-2 col-12 mb-2">
-                                                    Ответ:
-                                                </div>
-                                                <div class="col-md-10 col-12 mb-2">
-                                                    {{ task.answer}}
-                                                </div>
-                                                <hr>
-                                                {% endif %}
                                                 {% if task.answer_file %}
-                                                <div class="col-md-2 col-12 mb-2">
-                                                    Файл ответа:
+                                                <div class="col-12">
+                                                    <div class="card text-bg-success mb-3">
+                                                        <div class="card-header">Файл ответа</div>
+                                                        <div class="card-body">
+                                                            <p class="card-text">{{ task.afilename }}
+                                                                <a href="{{ task.answer_file.url }}">
+                                                                    <img src="{% static 'tasks/png/file.png' %}" alt=""
+                                                                        style="width: 20px; margin-bottom: 2px; padding: 0;"
+                                                                        data-bs-toggle="tooltip"
+                                                                        data-bs-placement="right"
+                                                                        data-bs-title="Скачать">
+                                                                </a>
+                                                            </p>
+                                                        </div>
+                                                    </div>
                                                 </div>
-                                                <div class="col-md-10 col-12 mb-2">
-                                                    {{ task.afilename }}
-                                                    <a href="{{ task.answer_file.url }}">
-                                                        <img src="{% static 'tasks/png/file.png' %}" alt=""
-                                                            style="width: 20px; margin-bottom: 2px; padding: 0;"
-                                                            data-bs-toggle="tooltip" data-bs-placement="right"
-                                                            data-bs-title="Скачать">
-                                                    </a>
+                                                {% endif %}
+                                                {% if task.answer %}
+                                                <div class="col-12">
+                                                    <div class="card text-bg-success mb-3">
+                                                        <div class="card-header">Ответ</div>
+                                                        <div class="card-body">
+                                                            <p class="card-text">{{ task.answer}}</p>
+                                                        </div>
+                                                    </div>
                                                 </div>
-                                                <hr>
                                                 {% endif %}
                                                 {% if task.comments %}
-                                                <div class="col-md-2 col-12 mb-2">
-                                                    Комментарии:
+                                                <div class="col-12">
+                                                    <div class="card text-bg-warning mb-3">
+                                                        <div class="card-header">Комментарии</div>
+                                                        <div class="card-body">
+                                                            <p class="card-text">{{ task.comments|safe }}</p>
+                                                        </div>
+                                                    </div>
                                                 </div>
-                                                <div class="col-md-10 col-12 mb-2">
-                                                    {{ task.comments|safe }}
-                                                </div>
-                                                <hr>
                                                 {% endif %}
                                             </div>
                                         </div>
