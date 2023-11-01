@@ -11,10 +11,10 @@ ChatGPT
             <form action="" method="post">
                 {% csrf_token %}
                 <label for="whoissystem">В какой роле выступает собеседник:</label>
-                <input type="text" name="whoissystem" id="whoissystem" required class="form-control mb-3">
+                <input type="text" name="whoissystem" id="whoissystem" required class="form-control mb-3" value="{{ whoissystem }}">
                 <label for="chatquestion">Задайте свой вопрос:</label>
                 <textarea name="chatquestion" id="chatquestion" cols="30" rows="10" class="form-control mb-3"
-                    required></textarea>
+                    required>{{ chatquestion }}</textarea>
                 <button type="submit" class="btn btn-dark">Получить ответ!</button>
             </form>
         </div>

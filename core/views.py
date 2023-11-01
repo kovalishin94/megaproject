@@ -32,6 +32,8 @@ def chatgpt(request):
             ]
         )
         context['answer'] = completion.choices[0].message['content']
+        context['whoissystem'] = request.POST.get('whoissystem')
+        context['chatquestion'] = request.POST.get('chatquestion')
     return render(request, 'core/openai.html', context)
 
 
