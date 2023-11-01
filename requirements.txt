@@ -3,3 +3,5 @@ psycopg2.binary
 Pillow
 gunicorn
 xlwt
+openai
+django-debug-toolbar

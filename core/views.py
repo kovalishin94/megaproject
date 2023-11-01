@@ -5,6 +5,7 @@ from django.http import Http404, JsonResponse
 from tasks.models import Task
 from django.db.models import Q
 from datetime import date
+import openai
 
 
 @login_required(login_url=reverse_lazy('auth'))
@@ -12,6 +13,26 @@ def index(request):
     context = {}
     context['privileges'] = request.user.profile.get_plist()
     return render(request, 'core/index.html', context)
+
+
+@login_required(login_url=reverse_lazy('auth'))
+def chatgpt(request):
+    context = {}
+    context['privileges'] = request.user.profile.get_plist()
+    if request.method == 'GET':
+        context['answer'] = 'Здесь появится ваш ответ...'
+    if request.method == 'POST':
+        openai.api_key = "!!!"
+
+        completion = openai.ChatCompletion.create(
+            model="gpt-3.5-turbo",
+            messages=[
+                {"role": "system", "content": request.POST.get('whoissystem')},
+                {"role": "user", "content": request.POST.get('chatquestion')}
+            ]
+        )
+        context['answer'] = completion.choices[0].message['content']
+    return render(request, 'core/openai.html', context)
 
 
 @login_required(login_url=reverse_lazy('auth'))

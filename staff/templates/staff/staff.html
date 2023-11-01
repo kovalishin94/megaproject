@@ -158,10 +158,10 @@
                         <th scope="row">{{ forloop.counter }}</th>
                         <td class="text-start">
                             {% if employee.photo %} <img src="{{ employee.photo.url }}" alt=""
-                                style="width: 60px; height: 60px; border-radius: 50%; margin-right: 2em;">
+                                style="width: 60px; height: 60px; border-radius: 50%; margin-right: 2em; object-fit: cover;">
                             {% else %}
                             <img src="{% static 'staff/png/zzz.png' %}" alt=""
-                                style="width: 60px; height: 60px; border-radius: 50%; margin-right: 2em;">
+                                style="width: 60px; height: 60px; border-radius: 50%; object-fit: cover; margin-right: 2em;">
                             {% endif %}
                             {{ employee.last_name }} {{ employee.first_name }} {{ employee.surname }}
 
