@@ -14,6 +14,14 @@
                 </div>
             </div>
         </div>
+        <div class="col-md-6 col-12">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Топ 3 сотрудника с просроченными задачами</h5>
+                    <canvas id="top3overdue" width="600" height="400"></canvas>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 <script>
@@ -48,6 +56,45 @@
         };
         new Chart(tasksStat, config);
     };
+    async function getTopThreeOverDue() {
+        const response = await fetch("api/v1/top3overdue")
+        const employee = await response.json()
+        const topoverdue = document.getElementById("top3overdue");
+        const data = {
+            labels: [
+                employee[0].first_name + ' ' + employee[0].last_name,
+                employee[1].first_name + ' ' + employee[1].last_name,
+                employee[2].first_name + ' ' + employee[2].last_name,
+            ],
+            datasets: [{
+                data: [employee[0].overdue_task, employee[1].overdue_task, employee[2].overdue_task],
+                backgroundColor: [
+                    'rgba(75, 192, 192, 0.5)',
+                    'rgba(75, 192, 192, 0.5)',
+                    'rgba(75, 192, 192, 0.5)',
+                ]
+            }]
+        };
+        const config = {
+            type: 'bar',
+            data: data,
+            options: {
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: { stepSize: 1 }
+                    }
+                }
+            },
+        };
+        new Chart(topoverdue, config);
+    };
     getTasksCount()
+    getTopThreeOverDue()
 </script>
 {% endblock content %}

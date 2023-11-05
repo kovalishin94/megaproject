@@ -5,3 +5,4 @@ gunicorn
 xlwt
 openai
 django-debug-toolbar
+djangorestframework

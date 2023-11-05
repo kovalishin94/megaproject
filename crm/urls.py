@@ -5,7 +5,7 @@ from django.views.static import serve
 from django.conf.urls import handler403
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
+    path('qwertyuiop56782345lkjhgfasdfghjklzxcvbnm/', admin.site.urls),
     path('', include('core.urls')),
     path('users/', include('userprofiles.urls')),
     path('staff/', include('staff.urls')),
@@ -21,4 +21,5 @@ if settings.DEBUG:
             'document_root': settings.MEDIA_ROOT,
         }),
         path('__debug__/', include('debug_toolbar.urls')),
+        path('api-auth/', include('rest_framework.urls')),
     ]

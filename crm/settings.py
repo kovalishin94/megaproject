@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'staff',
     'tasks',
     'testing',
+    'rest_framework',
 ]
 
 MIDDLEWARE = [

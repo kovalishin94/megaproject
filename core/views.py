@@ -3,8 +3,11 @@ from django.contrib.auth.decorators import login_required
 from django.urls import reverse_lazy
 from django.http import Http404, JsonResponse
 from tasks.models import Task
-from django.db.models import Q
+from staff.models import Employee
+from django.db.models import Q, Count
 from datetime import date
+from rest_framework import viewsets, permissions
+from .serializers import EmployeeSerializer
 import openai
 
 
@@ -54,6 +57,14 @@ def get_tasks_count(request):
     context['inspect'] = Task.objects.filter(
         Q(status='I') | Q(status='FI')).count()
     return JsonResponse(context)
+
+
+class EmployeeOverdueTask(viewsets.ModelViewSet):
+    # Я просто родил этот запрос, он вершина моего мастерства 05.11.2023:
+    queryset = Employee.objects.annotate(overdue_task=Count('target', filter=Q(
+        target__deadline__lt=date.today()) & ~Q(target__status='S'))).order_by('-overdue_task')[:3]
+    serializer_class = EmployeeSerializer
+    permission_classes = [permissions.IsAuthenticated]
 
 
 def forbidden_403(request, exception):
